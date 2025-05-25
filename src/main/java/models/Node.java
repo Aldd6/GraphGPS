@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 public class Node {
     private int id;
     private String label;
@@ -25,4 +27,7 @@ public class Node {
 
     @Override
     public String toString() { return this.id + "." + this.label; }
+
+    @Override
+    public int hashCode() { return Objects.hash(id); }
 }
