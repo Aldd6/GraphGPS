@@ -1,8 +1,6 @@
 package models;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class DirectedGraph {
     private HashMap<Node, HashSet<Edge>> adjacencyList;
@@ -60,5 +58,59 @@ public class DirectedGraph {
 
     public Node getNode(int id) {
         return nodeSet.get(id);
+    }
+
+    public Map<Integer, Node> getNodeSet() {
+        return nodeSet;
+    }
+
+    public HashMap<Node, HashSet<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public List<Node> dijkstra(Node origin, Node destination, int hour) {
+        Map<Node, Double> times = new HashMap<>();
+        Map<Node, Node> lastOnes = new HashMap<>();
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingDouble(times::get));
+        Set<Node> visited = new HashSet<>();
+
+        double totalDistanceInKm = 0;
+
+        for(Node node : adjacencyList.keySet()) {
+            times.put(node, Double.POSITIVE_INFINITY);
+        }
+
+        times.put(origin, 0.0);
+        queue.add(origin);
+
+        while(!queue.isEmpty()) {
+            Node current = queue.poll();
+            if(visited.contains(current)) continue;
+            visited.add(current);
+
+            if(current.equals(destination)) break;
+
+            for(Edge edge : adjacencyList.get(current)) {
+                Node neighbor = edge.getToNode();
+                double newTime = times.get(current) + edge.getTimeByHour(hour);
+                if(newTime < times.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+                    times.put(neighbor, newTime);
+                    lastOnes.put(neighbor, current);
+                    totalDistanceInKm += edge.getDistance();
+                    queue.add(neighbor);
+                }
+            }
+
+        }
+
+        List<Node> path = new ArrayList<>();
+        Node step = destination;
+        while(step != null) {
+            path.add(step);
+            step = lastOnes.get(step);
+        }
+        Collections.reverse(path);
+        System.out.println("Distance: " + totalDistanceInKm);
+        return path;
     }
 }
