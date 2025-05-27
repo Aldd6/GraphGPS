@@ -11,7 +11,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_antigua_ubicaciones.txt");
+            DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_conectado_completo.txt");
 //            System.out.println(graph.dijkstra(graph.getNode(1),graph.getNode(8),5));
             JXMapViewer mapViewer = new JXMapViewer();
 
@@ -28,7 +28,7 @@ public class Main {
             mapViewer.setTileFactory(tileFactory);
 
             GraphPainter.convertNodesToWaypoints(graph.getNodeSet());
-            GraphPainter.paint(mapViewer);
+            GraphPainter.paint(mapViewer, graph.getAdjacencyList());
 
         }catch (Exception e){
             e.printStackTrace();

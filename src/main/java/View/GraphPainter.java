@@ -1,5 +1,6 @@
 package View;
 
+import models.Edge;
 import models.Node;
 
 import org.jxmapviewer.JXMapViewer;
@@ -36,13 +37,13 @@ public class GraphPainter {
         isLoaded = true;
     }
 
-    public static void paint(JXMapViewer mapViewer) {
+    public static void paint(JXMapViewer mapViewer, HashMap<Node,HashSet<Edge>> edges) {
         if(isLoaded) {
 
             mapViewer.setZoom(7);
             mapViewer.setAddressLocation(MAP_CENTER);
 
-            routePainter = new RoutePainter(track);
+            routePainter = new RoutePainter(track, edges);
             waypointPainter.setWaypoints(waypoints);
 
             List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();

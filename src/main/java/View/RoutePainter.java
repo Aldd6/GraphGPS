@@ -1,6 +1,8 @@
 
 package View;
 
+import models.Edge;
+import models.Node;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -8,6 +10,8 @@ import org.jxmapviewer.viewer.GeoPosition;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,15 +24,17 @@ public class RoutePainter implements Painter<JXMapViewer>
     private boolean antiAlias = true;
 
     private List<GeoPosition> track;
+    private HashMap<Node, HashSet<Edge>> edges;
 
     /**
      * @param track the track
      */
-    public RoutePainter(List<GeoPosition> track)
+    public RoutePainter(List<GeoPosition> track, HashMap<Node, HashSet<Edge>> edges)
     {
         // copy the list so that changes in the 
         // original list do not have an effect here
         this.track = new ArrayList<GeoPosition>(track);
+        this.edges = edges;
     }
 
     @Override
@@ -69,22 +75,28 @@ public class RoutePainter implements Painter<JXMapViewer>
 
         boolean first = true;
 
-        for (GeoPosition gp : track)
+        GeoPosition gp;
+
+        for (Node node : edges.keySet())
         {
-            // convert geo-coordinate to world bitmap pixel
-            Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
-
-            if (first)
+            for(Edge edge : edges.get(node))
             {
-                first = false;
-            }
-            else
-            {
-                g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
-            }
+                gp = new GeoPosition(node.getLatitude(), node.getLongitude());
+                // convert geo-coordinate to world bitmap pixel
+                Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
 
-            lastX = (int) pt.getX();
-            lastY = (int) pt.getY();
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
+                }
+
+                lastX = (int) pt.getX();
+                lastY = (int) pt.getY();
+            }
         }
     }
 }
