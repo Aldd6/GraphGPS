@@ -60,6 +60,10 @@ public class DirectedGraph {
         return nodeSet.get(id);
     }
 
+    public Map<Integer, Node> getNodeSet() {
+        return nodeSet;
+    }
+
     public List<Node> dijkstra(Node origin, Node destination, int hour) {
         Map<Node, Double> times = new HashMap<>();
         Map<Node, Node> lastOnes = new HashMap<>();
