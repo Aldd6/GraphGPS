@@ -28,8 +28,8 @@ public class GraphConstructor {
                 tokens = line.split(",");
                 String label = tokens[0];
 
-                double lon = Double.parseDouble(tokens[1]);
-                double lat = Double.parseDouble(tokens[2]);
+                double lat = Double.parseDouble(tokens[1]);
+                double lon = Double.parseDouble(tokens[2]);
 
                 graph.addNode(label, lon, lat);
             }else {
