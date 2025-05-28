@@ -28,6 +28,7 @@ public class RoutePainter implements Painter<JXMapViewer>
 
     /**
      * @param track the track
+     * @param edges the edges between the tracks
      */
     public RoutePainter(List<GeoPosition> track, HashMap<Node, HashSet<Edge>> edges)
     {
@@ -81,7 +82,8 @@ public class RoutePainter implements Painter<JXMapViewer>
         {
             for(Edge edge : edges.get(node))
             {
-                gp = new GeoPosition(node.getLatitude(), node.getLongitude());
+                Node toNode = edge.getToNode();
+                gp = new GeoPosition(toNode.getLatitude(), toNode.getLongitude());
                 // convert geo-coordinate to world bitmap pixel
                 Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
 

@@ -27,9 +27,9 @@ public class GraphPainter {
     private static boolean isLoaded = false;
 
     public static void convertNodesToWaypoints(Map<Integer, Node> nodes) {
-        System.out.println("Nodos cargados: " + nodes.size());
+//        System.out.println("Nodos cargados: " + nodes.size());
         for (Node node : nodes.values()) {
-            System.out.println("Lat: " + node.getLatitude() + ", Lon: " + node.getLongitude());
+//            System.out.println("Lat: " + node.getLatitude() + ", Lon: " + node.getLongitude());
             GeoPosition pos = new GeoPosition(node.getLatitude(), node.getLongitude());
             track.add(pos);
             waypoints.add(new DefaultWaypoint(pos)) ;
