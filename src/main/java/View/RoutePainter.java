@@ -28,6 +28,7 @@ public class RoutePainter implements Painter<JXMapViewer>
 
     /**
      * @param track the track
+     * @param edges the edges between the tracks
      */
     public RoutePainter(List<GeoPosition> track, HashMap<Node, HashSet<Edge>> edges)
     {
