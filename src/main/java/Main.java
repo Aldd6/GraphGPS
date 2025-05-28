@@ -11,8 +11,8 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_conectado_completo.txt");
-//            System.out.println(graph.dijkstra(graph.getNode(1),graph.getNode(8),5));
+            DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_conectado_realista.txt");
+            System.out.println(graph.dijkstra(graph.getNode(1),graph.getNode(10),8));
             JXMapViewer mapViewer = new JXMapViewer();
 
             // Display the viewer in a JFrame
