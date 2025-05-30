@@ -129,16 +129,14 @@ public class GraphPainter {
         if (compoundPainter != null) {
             List<Painter<JXMapViewer>> currentPainters = new ArrayList<>(compoundPainter.getPainters());
 
-            // Elimina rutas anteriores si ya existían (evita líneas acumuladas)
+            // limpiamos las tutas si ya existían
             currentPainters.removeIf(p -> p instanceof RoutePainter && ((RoutePainter) p).isRutaDijkstra());
 
-            // Marcamos este como especial
             rutaPainter.setRutaDijkstra(true);
 
-            // Agrega la nueva ruta
+            // agregamos para pintar la nueva ruta
             currentPainters.add(rutaPainter);
 
-            // Actualiza el compound painter
             compoundPainter.setPainters(currentPainters);
             mapViewer.repaint();
         }
