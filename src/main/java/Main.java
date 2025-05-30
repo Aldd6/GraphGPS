@@ -1,36 +1,31 @@
-import View.GraphPainter;
+import View.View;
 import models.DirectedGraph;
 import models.GraphConstructor;
-import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.OSMTileFactoryInfo;
-import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.TileFactoryInfo;
-
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         try {
             DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_conectado_realista.txt");
-            System.out.println(graph.dijkstra(graph.getNode(1),graph.getNode(10),8));
-            JXMapViewer mapViewer = new JXMapViewer();
 
-            // Display the viewer in a JFrame
-            JFrame frame = new JFrame("JXMapviewer2 Example 2");
-            frame.getContentPane().add(mapViewer);
-            frame.setSize(1280, 720);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
+            // Iniciamos la interfaz gráfica
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-            // Create a TileFactoryInfo for OpenStreetMap
-            TileFactoryInfo info = new OSMTileFactoryInfo();
-            DefaultTileFactory tileFactory = new DefaultTileFactory(info);
-            mapViewer.setTileFactory(tileFactory);
+            SwingUtilities.invokeLater(() -> {
+                View vista = new View();
+                vista.setTitle("Mapa con Grafo");
+                vista.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                vista.pack();
+                vista.setLocationRelativeTo(null);
 
-            GraphPainter.convertNodesToWaypoints(graph.getNodeSet());
-            GraphPainter.paint(mapViewer, graph.getAdjacencyList());
+                vista.setGraph(graph);
+                vista.setVisible(true);
 
-        }catch (Exception e){
+                vista.llenarComboBoxes(graph);
+                vista.llenarHora();
+                vista.inicializarMapa(graph);
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
