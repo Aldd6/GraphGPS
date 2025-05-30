@@ -13,11 +13,11 @@ public class View extends JFrame {
     private JPanel contenedorPrincipal;
     private JComboBox comboBoxOrigen;
     private JComboBox comboBoxDestino;
-    private JSpinner spinner1;
     private JTextField textField1;
     private JButton calcularButton;
     private JPanel menuSuperior;
     private JPanel contenedorMap;
+    private JComboBox comboBoxHora;
 
     public View(){
         setContentPane(contenedorPrincipal);
@@ -51,6 +51,13 @@ public class View extends JFrame {
             String label = node.getLabel();
             comboBoxOrigen.addItem(label);
             comboBoxDestino.addItem(label);
+        }
+    }
+
+    public void llenarHora(){
+        comboBoxHora.removeAllItems();
+        for (int i = 1; i <= 23; i++) {
+            comboBoxHora.addItem(i);
         }
     }
 }

@@ -20,6 +20,7 @@ public class Main {
                 vista.setVisible(true);
 
                 vista.llenarComboBoxes(graph);
+                vista.llenarHora();
                 // Insertamos el mapa en el contenedor para pintarlo al ejecutar la main
                 vista.inicializarMapa(graph);
             });
