@@ -38,6 +38,11 @@ public class RoutePainter implements Painter<JXMapViewer>
         this.edges = edges;
     }
 
+    public RoutePainter(List<GeoPosition> track) {
+        this.track = new ArrayList<>(track);
+        this.edges = null;
+    }
+
     @Override
     public void paint(Graphics2D g, JXMapViewer map, int w, int h)
     {
@@ -69,30 +74,68 @@ public class RoutePainter implements Painter<JXMapViewer>
      * @param g the graphics object
      * @param map the map
      */
+//    private void drawRoute(Graphics2D g, JXMapViewer map)
+//    {
+//        int lastX = 0;
+//        int lastY = 0;
+//
+//        boolean first = true;
+//
+//        GeoPosition gp;
+//
+//        for (Node node : edges.keySet())
+//        {
+//            for(Edge edge : edges.get(node))
+//            {
+//                Node toNode = edge.getToNode();
+//                gp = new GeoPosition(toNode.getLatitude(), toNode.getLongitude());
+//                // convert geo-coordinate to world bitmap pixel
+//                Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
+//
+//                if (first)
+//                {
+//                    first = false;
+//                }
+//                else
+//                {
+//                    g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
+//                }
+//
+//                lastX = (int) pt.getX();
+//                lastY = (int) pt.getY();
+//            }
+//        }
+//    }
+
     private void drawRoute(Graphics2D g, JXMapViewer map)
     {
+        if (edges == null && track != null) {
+
+            // Dibujo de una ruta individual (como resultado de Dijkstra)
+            Point2D prev = null;
+            for (GeoPosition gp : track) {
+                Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
+                if (prev != null) {
+                    g.drawLine((int) prev.getX(), (int) prev.getY(), (int) pt.getX(), (int) pt.getY());
+                }
+                prev = pt;
+            }
+            return;
+        }
+
+        // dibuja todo el grafo como lo hace orginalmente
         int lastX = 0;
         int lastY = 0;
-
         boolean first = true;
 
-        GeoPosition gp;
-
-        for (Node node : edges.keySet())
-        {
-            for(Edge edge : edges.get(node))
-            {
-                Node toNode = edge.getToNode();
-                gp = new GeoPosition(toNode.getLatitude(), toNode.getLongitude());
-                // convert geo-coordinate to world bitmap pixel
+        for (Node node : edges.keySet()) {
+            for (Edge edge : edges.get(node)) {
+                GeoPosition gp = new GeoPosition(edge.getToNode().getLatitude(), edge.getToNode().getLongitude());
                 Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
 
-                if (first)
-                {
+                if (first) {
                     first = false;
-                }
-                else
-                {
+                } else {
                     g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
                 }
 
@@ -100,5 +143,9 @@ public class RoutePainter implements Painter<JXMapViewer>
                 lastY = (int) pt.getY();
             }
         }
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

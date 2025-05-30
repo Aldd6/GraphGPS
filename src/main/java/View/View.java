@@ -8,6 +8,7 @@ import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 
 import javax.swing.*;
+import java.util.List;
 
 public class View extends JFrame {
     private JPanel contenedorPrincipal;
@@ -19,13 +20,56 @@ public class View extends JFrame {
     private JPanel contenedorMap;
     private JComboBox comboBoxHora;
 
-    public View(){
+    private DirectedGraph graph;
+
+    private JXMapViewer mapViewer;
+
+    public View() {
         setContentPane(contenedorPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        calcularButton.addActionListener(e -> {
+            String origenLabel = (String) comboBoxOrigen.getSelectedItem();
+            String destinoLabel = (String) comboBoxDestino.getSelectedItem();
+            int hora = (int) comboBoxHora.getSelectedItem();
+
+            if (origenLabel == null || destinoLabel == null) {
+                JOptionPane.showMessageDialog(this, "Seleccione origen y destino.");
+                return;
+            }
+
+            Node origen = null;
+            Node destino = null;
+
+            for (Node n : graph.getNodeSet().values()) {
+                if (n.getLabel().equals(origenLabel)) {
+                    origen = n;
+                }
+                if (n.getLabel().equals(destinoLabel)) {
+                    destino = n;
+                }
+            }
+
+            if (origen == null || destino == null) {
+                JOptionPane.showMessageDialog(this, "Nodos no encontrados.");
+                return;
+            }
+
+            List<Node> ruta = graph.dijkstra(origen, destino, hora);
+
+            GraphPainter.paintRuta(mapViewer, ruta);
+
+            System.out.println("Prueba: Ruta encontrada");
+
+            for (Node n : ruta){
+                System.out.println(n.getLatitude());
+            }
+
+        });
     }
 
     public void inicializarMapa(DirectedGraph graph) {
-        JXMapViewer mapViewer = new JXMapViewer();
+        mapViewer = new JXMapViewer();
 
         // Configuración global del mapa
         TileFactoryInfo info = new OSMTileFactoryInfo();
@@ -43,21 +87,25 @@ public class View extends JFrame {
         contenedorMap.repaint();
     }
 
-    public void llenarComboBoxes(DirectedGraph graph){
+    public void llenarComboBoxes(DirectedGraph graph) {
         comboBoxOrigen.removeAllItems();
         comboBoxDestino.removeAllItems();
 
-        for (Node node : graph.getNodeSet().values()){
+        for (Node node : graph.getNodeSet().values()) {
             String label = node.getLabel();
             comboBoxOrigen.addItem(label);
             comboBoxDestino.addItem(label);
         }
     }
 
-    public void llenarHora(){
+    public void llenarHora() {
         comboBoxHora.removeAllItems();
         for (int i = 1; i <= 23; i++) {
             comboBoxHora.addItem(i);
         }
+    }
+
+    public void setGraph(DirectedGraph graph) {
+        this.graph = graph;
     }
 }

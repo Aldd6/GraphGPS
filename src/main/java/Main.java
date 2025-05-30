@@ -17,11 +17,12 @@ public class Main {
                 vista.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 vista.pack();
                 vista.setLocationRelativeTo(null);
+
+                vista.setGraph(graph);
                 vista.setVisible(true);
 
                 vista.llenarComboBoxes(graph);
                 vista.llenarHora();
-                // Insertamos el mapa en el contenedor para pintarlo al ejecutar la main
                 vista.inicializarMapa(graph);
             });
         } catch (Exception e) {

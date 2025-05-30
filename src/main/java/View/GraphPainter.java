@@ -11,7 +11,9 @@ import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import org.jxmapviewer.painter.Painter;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class GraphPainter {
     private static List<GeoPosition> track = new ArrayList<>();
@@ -57,4 +59,33 @@ public class GraphPainter {
             System.out.println("No cargaste los nodos");
         }
     }
+
+    // Método personalizado para pintar ruta dictada por dijkstra
+    public static void paintRuta(JXMapViewer mapViewer, List<Node> ruta){
+        if (ruta == null || ruta.size() < 2){
+            System.out.println("Ruta vacía o incompleta");
+            return;
+        }
+
+        List<GeoPosition> rutaGeo = new ArrayList<>();
+        for(Node node : ruta){
+            rutaGeo.add(new GeoPosition(node.getLatitude(), node.getLongitude()));
+        }
+
+        // Pintamos la ruta óptima
+        RoutePainter rutaPainter = new RoutePainter(rutaGeo);
+        rutaPainter.setColor(Color.BLUE);
+
+        // Combinación de nuevo grafo con el original, esto no es muy optimo pero funciona xd
+        List<Painter<JXMapViewer>> painters = new ArrayList<>();
+        painters.add(routePainter);
+        painters.add(waypointPainter);
+        painters.add(rutaPainter);
+
+        CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>(painters);
+        mapViewer.setOverlayPainter(compoundPainter);
+
+        System.out.println("Pintando ruta con " + ruta.size() + " nodos.");
+    }
+
 }
