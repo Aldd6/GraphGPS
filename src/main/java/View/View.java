@@ -1,6 +1,7 @@
 package View;
 
 import models.DirectedGraph;
+import models.Node;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.viewer.DefaultTileFactory;
@@ -10,8 +11,8 @@ import javax.swing.*;
 
 public class View extends JFrame {
     private JPanel contenedorPrincipal;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
+    private JComboBox comboBoxOrigen;
+    private JComboBox comboBoxDestino;
     private JSpinner spinner1;
     private JTextField textField1;
     private JButton calcularButton;
@@ -40,5 +41,16 @@ public class View extends JFrame {
         contenedorMap.add(mapViewer, java.awt.BorderLayout.CENTER);
         contenedorMap.revalidate();
         contenedorMap.repaint();
+    }
+
+    public void llenarComboBoxes(DirectedGraph graph){
+        comboBoxOrigen.removeAllItems();
+        comboBoxDestino.removeAllItems();
+
+        for (Node node : graph.getNodeSet().values()){
+            String label = node.getLabel();
+            comboBoxOrigen.addItem(label);
+            comboBoxDestino.addItem(label);
+        }
     }
 }

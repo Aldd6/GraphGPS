@@ -19,6 +19,7 @@ public class Main {
                 vista.setLocationRelativeTo(null);
                 vista.setVisible(true);
 
+                vista.llenarComboBoxes(graph);
                 // Insertamos el mapa en el contenedor para pintarlo al ejecutar la main
                 vista.inicializarMapa(graph);
             });
