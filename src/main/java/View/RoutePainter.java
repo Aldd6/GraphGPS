@@ -26,6 +26,17 @@ public class RoutePainter implements Painter<JXMapViewer>
     private List<GeoPosition> track;
     private HashMap<Node, HashSet<Edge>> edges;
 
+    private boolean isRutaDijkstra = false;
+
+    public void setRutaDijkstra(boolean value) {
+        this.isRutaDijkstra = value;
+    }
+
+    public boolean isRutaDijkstra() {
+        return this.isRutaDijkstra;
+    }
+
+
     /**
      * @param track the track
      * @param edges the edges between the tracks

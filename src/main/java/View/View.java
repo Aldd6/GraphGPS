@@ -14,7 +14,7 @@ public class View extends JFrame {
     private JPanel contenedorPrincipal;
     private JComboBox comboBoxOrigen;
     private JComboBox comboBoxDestino;
-    private JTextField textField1;
+    private JTextField txtDistancia;
     private JButton calcularButton;
     private JPanel menuSuperior;
     private JPanel contenedorMap;
