@@ -8,6 +8,10 @@ import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,7 @@ public class View extends JFrame {
     private JPanel menuSuperior;
     private JPanel contenedorMap;
     private JComboBox comboBoxHora;
+    private JTable tablaDijkstra;
 
     private DirectedGraph graph;
 
@@ -28,6 +33,7 @@ public class View extends JFrame {
     public View() {
         setContentPane(contenedorPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        inicializarTabla();
 
         calcularButton.addActionListener(e -> {
             String origenLabel = (String) comboBoxOrigen.getSelectedItem();
@@ -71,7 +77,7 @@ public class View extends JFrame {
             String pathMessage = ruta.stream().map(Node::getLabel).collect(Collectors.joining("\n","\n","\n"));
 
             JOptionPane.showMessageDialog(this, "Ruta encontrada: " + pathMessage + "\nTiempo estimado: " + graph.getLastTravelTime());
-            System.out.println(graph.dijkstraStatus());
+            llenarTabla(graph.dijkstraStatus());
         });
     }
 
@@ -109,6 +115,25 @@ public class View extends JFrame {
         comboBoxHora.removeAllItems();
         for (int i = 1; i <= 23; i++) {
             comboBoxHora.addItem(i);
+        }
+    }
+
+    public void inicializarTabla() {
+        String[] columnas = {"Vertice","Padre","g(n)"};
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(columnas);
+        tablaDijkstra.setModel(modelo);
+    }
+
+    public void llenarTabla(ArrayList<String[]> datos){
+        DefaultTableModel modelo = (DefaultTableModel) tablaDijkstra.getModel();
+
+        while(modelo.getRowCount() > 0){
+            modelo.removeRow(0);
+        }
+
+        for(String[] fila: datos) {
+            modelo.addRow(new String[]{fila[0],fila[1],fila[2]});
         }
     }
 
