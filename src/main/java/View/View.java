@@ -9,6 +9,7 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class View extends JFrame {
     private JPanel contenedorPrincipal;
@@ -65,6 +66,12 @@ public class View extends JFrame {
                 System.out.println(n.getLatitude());
             }
 
+            txtDistancia.setText(String.valueOf(graph.getLastTravelDistance()));
+
+            String pathMessage = ruta.stream().map(Node::getLabel).collect(Collectors.joining("\n","\n","\n"));
+
+            JOptionPane.showMessageDialog(this, "Ruta encontrada: " + pathMessage + "\nTiempo estimado: " + graph.getLastTravelTime());
+            System.out.println(graph.dijkstraStatus());
         });
     }
 
