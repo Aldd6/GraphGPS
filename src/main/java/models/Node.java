@@ -26,7 +26,7 @@ public class Node {
     public void setLatitude(double latitude) { this.latitude = latitude; }
 
     @Override
-    public String toString() { return this.id + "." + this.label; }
+    public String toString() { return this.id + ". " + this.label; }
 
     @Override
     public int hashCode() { return Objects.hash(id); }
