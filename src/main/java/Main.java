@@ -6,7 +6,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            DirectedGraph graph = GraphConstructor.loadGraph("src/main/resources/grafo_tigo_conectado_realista.txt");
+            DirectedGraph graph = GraphConstructor.loadGraph("grafo_tigo_conectado_realista.txt");
 
             // Iniciamos la interfaz gráfica
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
