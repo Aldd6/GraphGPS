@@ -1,8 +1,7 @@
 package models;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +9,10 @@ public class GraphConstructor {
     public static DirectedGraph loadGraph(String path) throws IOException {
         DirectedGraph graph = new DirectedGraph();
 
-        BufferedReader br = new BufferedReader(new FileReader(path));
+        InputStream in = GraphConstructor.
+                class.getClassLoader().getResourceAsStream(path);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         String line;
         boolean readingNodes = true;
 
