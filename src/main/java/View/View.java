@@ -1,0 +1,143 @@
+package View;
+
+import models.DirectedGraph;
+import models.Node;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.TileFactoryInfo;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class View extends JFrame {
+    private JPanel contenedorPrincipal;
+    private JComboBox comboBoxOrigen;
+    private JComboBox comboBoxDestino;
+    private JTextField txtDistancia;
+    private JButton calcularButton;
+    private JPanel menuSuperior;
+    private JPanel contenedorMap;
+    private JComboBox comboBoxHora;
+    private JTable tablaDijkstra;
+
+    private DirectedGraph graph;
+
+    private JXMapViewer mapViewer;
+
+    public View() {
+        setContentPane(contenedorPrincipal);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        inicializarTabla();
+
+        calcularButton.addActionListener(e -> {
+            String origenLabel = (String) comboBoxOrigen.getSelectedItem();
+            String destinoLabel = (String) comboBoxDestino.getSelectedItem();
+            int hora = (int) comboBoxHora.getSelectedItem();
+
+            if (origenLabel == null || destinoLabel == null) {
+                JOptionPane.showMessageDialog(this, "Seleccione origen y destino.");
+                return;
+            }
+
+            Node origen = null;
+            Node destino = null;
+
+            for (Node n : graph.getNodeSet().values()) {
+                if (n.getLabel().equals(origenLabel)) {
+                    origen = n;
+                }
+                if (n.getLabel().equals(destinoLabel)) {
+                    destino = n;
+                }
+            }
+
+            if (origen == null || destino == null) {
+                JOptionPane.showMessageDialog(this, "Nodos no encontrados.");
+                return;
+            }
+
+            List<Node> ruta = graph.dijkstra(origen, destino, hora);
+
+            GraphPainter.paintRuta(mapViewer, ruta);
+
+            System.out.println("Prueba: Ruta encontrada");
+
+            for (Node n : ruta){
+                System.out.println(n.getLatitude());
+            }
+
+            txtDistancia.setText(String.valueOf(graph.getLastTravelDistance()));
+
+            String pathMessage = ruta.stream().map(Node::getLabel).collect(Collectors.joining("\n","\n","\n"));
+
+            JOptionPane.showMessageDialog(this, "Ruta encontrada: " + pathMessage + "\nTiempo estimado: " + graph.getLastTravelTime());
+            llenarTabla(graph.dijkstraStatus());
+        });
+    }
+
+    public void inicializarMapa(DirectedGraph graph) {
+        mapViewer = new JXMapViewer();
+
+        // Configuración global del mapa
+        TileFactoryInfo info = new OSMTileFactoryInfo();
+        DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+        mapViewer.setTileFactory(tileFactory);
+
+        // Pintar nodos y aristas
+        GraphPainter.convertNodesToWaypoints(graph.getNodeSet());
+        GraphPainter.paint(mapViewer, graph.getAdjacencyList());
+
+        contenedorMap.removeAll();
+        contenedorMap.setLayout(new java.awt.BorderLayout());
+        contenedorMap.add(mapViewer, java.awt.BorderLayout.CENTER);
+        contenedorMap.revalidate();
+        contenedorMap.repaint();
+    }
+
+    public void llenarComboBoxes(DirectedGraph graph) {
+        comboBoxOrigen.removeAllItems();
+        comboBoxDestino.removeAllItems();
+
+        for (Node node : graph.getNodeSet().values()) {
+            String label = node.getLabel();
+            comboBoxOrigen.addItem(label);
+            comboBoxDestino.addItem(label);
+        }
+    }
+
+    public void llenarHora() {
+        comboBoxHora.removeAllItems();
+        for (int i = 1; i <= 23; i++) {
+            comboBoxHora.addItem(i);
+        }
+    }
+
+    public void inicializarTabla() {
+        String[] columnas = {"Vertice","Padre","g(n)"};
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(columnas);
+        tablaDijkstra.setModel(modelo);
+    }
+
+    public void llenarTabla(ArrayList<String[]> datos){
+        DefaultTableModel modelo = (DefaultTableModel) tablaDijkstra.getModel();
+
+        while(modelo.getRowCount() > 0){
+            modelo.removeRow(0);
+        }
+
+        for(String[] fila: datos) {
+            modelo.addRow(new String[]{fila[0],fila[1],fila[2]});
+        }
+    }
+
+    public void setGraph(DirectedGraph graph) {
+        this.graph = graph;
+    }
+}
